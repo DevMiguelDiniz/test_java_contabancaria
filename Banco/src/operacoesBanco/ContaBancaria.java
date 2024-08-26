@@ -1,7 +1,6 @@
 package operacoesBanco;
 
 import java.util.Scanner;
-
 import java.util.Random;
 
 public class ContaBancaria {
@@ -9,8 +8,8 @@ public class ContaBancaria {
     private int numero;
     private double limite;
     private double saldo;
-    public Scanner sc = new Scanner(System.in);
 
+    // Usado para construir a classe
     public ContaBancaria(int numero, String cpf, double saldo, double limite) {
         this.numero = numero;
         this.cpf = cpf;
@@ -18,6 +17,7 @@ public class ContaBancaria {
         this.limite = limite;
     }
 
+    // Metodo do saque, chama a função que calcula o limite (metade do saldo)
     public void saque(double valor) {
         if (valor <= saldo + limite) {
             saldo -= valor;
@@ -25,20 +25,32 @@ public class ContaBancaria {
         } else {
             System.out.println("Saque não permitido. Valor ultrapassa o limite disponível.");
         }
-        limite = saldo / 2;
+        calculoLimite();
     }
 
+    // Metodo do deposito
     public void deposito(double valor) {
         if (saldo < 0) {
-            double taxa = saldo * 0.03;
+            double taxa = saldo * -0.03;
             saldo += valor - taxa;
-            System.out.println("Deposito de R$" + valor + "realizado com sucesso. Taxa de R$" + taxa + "aplicada. Saldo atual = R$" + saldo);
+            System.out.println("Depósito de R$" + valor + " realizado com sucesso. Taxa de R$" + taxa + " aplicada. Saldo atual: R$" + saldo);
         } else {
             saldo += valor;
-            System.out.println("Deposito de R$" + valor + "realizado com sucesso. Saldo atual = R$" + saldo);
+            System.out.println("Depósito de R$" + valor + " realizado com sucesso. Saldo atual: R$" + saldo);
+        }
+        calculoLimite();
+    }
+
+    // Metodo do limite
+    public void calculoLimite() {
+        if (saldo <= 0) {
+            limite = 0;
+        } else {
+            limite = saldo / 2;
         }
     }
 
+    // Métodos de acesso para os atributos
     public double getSaldo() {
         return saldo;
     }
@@ -55,35 +67,22 @@ public class ContaBancaria {
         return cpf;
     }
 
-    public static void getLimite(double limite) {
-
-    }
-
-    public double calculoLimite(double saldo) {
-        if (saldo <= 0) {
-            limite = 0;
-        } else {
-            limite = saldo / 2;
-        }
-        return limite;
-    }
-
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-        Random aleatorio = new Random(12345);
+        Random aleatorio = new Random();
 
-        int numeroConta = aleatorio.nextInt();
-        sc.nextLine();
+        int numeroConta = Math.abs(aleatorio.nextInt());
 
-        System.out.println("Digite o cpf (escreva somente os números):");
+        System.out.println("Digite o CPF (somente números):");
         String cpfConta = sc.next();
 
         double saldoConta = 0;
-
         double limiteConta = 0;
 
+        // Cria a conta bancária com saldo e limite iniciais
         ContaBancaria conta = new ContaBancaria(numeroConta, cpfConta, saldoConta, limiteConta);
 
+        // Exibe as operações disponíveis para o usuário
         while (true) {
             System.out.println("\nEscolha uma operação:");
             System.out.println("1. Saque");
